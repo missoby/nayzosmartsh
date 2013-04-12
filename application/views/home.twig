@@ -1,0 +1,16 @@
+<html>
+    
+ <head>
+  
+</head>
+<body>
+       
+page home : {% if getsessionhelper() %} {{ getsessionhelper()['nom'] }} | <a href="/inscription/logout" id='logoutsmart'> logout </a> {% else %} <a id="inscrismart" href="/inscription"> Inscription </a> | <a id="loginsmart" href="/inscription/login"> Login </a> {% endif %}
+
+<br>
+<a href="/">Home</a> <br/>
+
+{# <script src="/assets/js/jquery-1.7.1.min.js"></script> #}
+</body>
+</html>
+
