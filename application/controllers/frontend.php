@@ -5,9 +5,6 @@ class Frontend extends CI_Controller {
         public function __construct()
         {
                 parent::__construct();
-                $this->load->library('twig');
-                
-                $this->load->helper('sessionnzo');
                 $this->twig->addFunction('getsessionhelper');    
         }
         
@@ -27,7 +24,7 @@ class Frontend extends CI_Controller {
                 $this->twig->render('uploadimg');          
 	}
         
-        function do_upload()
+        public function do_upload()
 	{
 		$config['upload_path'] = './uploads/';
 		$config['allowed_types'] = 'gif|jpg|png';

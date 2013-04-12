@@ -1,29 +1,28 @@
 <?php if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 header('Access-Control-Allow-Origin: *');
-class Phonelogin extends CI_Controller {
+class Phonelogin extends CI_Controller
+{
     public $tableau = array();
+
         public function __construct()
         {
                 parent::__construct();
-                $this->load->library('twig');
-		$this->load->library('form_validation'); 
+		$this->load->library('form_validation');
+                
                 $this->load->model('inscription_model');
                 $this->load->model('phonelogin_model');
-                $this->twig->addFunction('validation_errors');  
                 
-                $this->load->helper('sessionnzo');
-                $this->twig->addFunction('getsessionhelper');    
-                
-                
+                $this->twig->addFunction('validation_errors');
+                $this->twig->addFunction('getsessionhelper');
         }
 
 	public function index()
-	{                   
-
+	{
 	}
 
         
-        public function login() {
+        public function login()
+        {
             $this->form_validation->set_rules('email', 'Email', 'trim|required|min_length[4]|xss_clean');
             $this->form_validation->set_rules('password', 'Password', 'trim|required|min_length[4]|max_length[32]|xss_clean|callback_check_login');
             if ($this->form_validation->run() == FALSE)
@@ -32,68 +31,76 @@ class Phonelogin extends CI_Controller {
                 echo json_encode( array('error' => validation_errors()) );
                // echo validation_errors();
             }
-            else{
+            else
+            {
 //                    /$data = array('error' => 0, 'test' => 'abc');
 //                    echo json_encode($data);/
                    echo json_encode($this->tableau); // print_r($this->tableau);
             }
         }
         
-        public function check_login(){           
-       
-                $req = $this->phonelogin_model->login();
-                if(!$req){
-                    $this->form_validation->set_message('check_login', 'Email ou mot de passe incorrecte!');
-                    return false;
-                }
-                else{
-                    foreach($req as $val){
-                        if (!$val->activer) {
-                            $this->form_validation->set_message('check_login', 'Utilisateur non Activer! ');
-                            return false;
-                        }
-                        $this->tableau = array('error' => 0, 'id' => $val->id, 'email' => $val->email, 'nom' => $val->nom);
-                      //  return $tableau;
+        public function check_login()
+        {
+            $req = $this->phonelogin_model->login();
+            if(!$req)
+            {
+                $this->form_validation->set_message('check_login', 'Email ou mot de passe incorrecte!');
+                return false;
+            }
+            else
+            {
+                foreach($req as $val)
+                {
+                    if (!$val->activer)
+                    {
+                        $this->form_validation->set_message('check_login', 'Utilisateur non Activer! ');
+                        return false;
                     }
-                    return TRUE;
+                    
+                    $this->tableau = array('error' => 0, 'id' => $val->id, 'email' => $val->email, 'nom' => $val->nom);
+                      //  return $tableau;
                 }
+                
+                return TRUE;
              }
-       
+        }
         
-        function logout(){
+        public function logout()
+        {
             $this->session->unset_userdata('login_in');
             $this->session->sess_destroy();
             redirect('frontend');
         }
         
-        function setstatut(){
+        function setstatut()
+        {
             $this->phonelogin_model->setStatut();
             echo "true";
         }
 
         
-         function upload()
+        function upload()
 	{
-		$config['upload_path'] = './uploads/';
-		$config['allowed_types'] = 'gif|jpg|png|jpeg';
-		$config['max_size']	= '300';
-		$config['max_width']  = '1024';
-		$config['max_height']  = '768';
-                $config['encrypt_name']  = TRUE;
+            $config['upload_path'] = './uploads/';
+            $config['allowed_types'] = 'gif|jpg|png|jpeg';
+            $config['max_size']	= '300';
+            $config['max_width']  = '1024';
+            $config['max_height']  = '768';
+            $config['encrypt_name']  = TRUE;
 
-		$this->load->library('upload', $config);
+            $this->load->library('upload', $config);
 
-		if ( ! $this->upload->do_upload())
-		{
-			//$error = array('error' => $this->upload->display_errors());
-			echo $this->upload->display_errors();
-		}
-		else
-		{
-			//$data = array('upload_data' => $this->upload->data());
-                        $this->phonelogin_model->saveuploadimage($this->upload->data());
-                        echo "seccess";
-			//$this->twig->render('successupload', $data);
-		}
+            if ( ! $this->upload->do_upload())
+            {
+               	//$error = array('error' => $this->upload->display_errors());
+                   echo $this->upload->display_errors();
+            }
+            else
+            {
+            	//$data = array('upload_data' => $this->upload->data());
+                $this->phonelogin_model->saveuploadimage($this->upload->data());
+                echo "seccess";
+                //$this->twig->render('successupload', $data);
+            }
 	}
 }

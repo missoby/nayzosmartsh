@@ -1,19 +1,15 @@
 <?php if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 
-class Inscription extends CI_Controller {
-    
+class Inscription extends CI_Controller
+{    
         public function __construct()
         {
                 parent::__construct();
-                $this->load->library('twig');
 		$this->load->library('form_validation');
                 $this->load->model('inscription_model');
+                
                 $this->twig->addFunction('validation_errors');  
-                
-                $this->load->helper('sessionnzo');
-                $this->twig->addFunction('getsessionhelper');    
-                
-                
+                $this->twig->addFunction('getsessionhelper');        
         }
 
 	public function index()
@@ -77,82 +73,92 @@ class Inscription extends CI_Controller {
                       
         }
         
-        public function login() {
+        public function login()
+        {
             $this->form_validation->set_rules('email', 'Email', 'trim|required|min_length[4]|xss_clean');
             $this->form_validation->set_rules('password', 'Password', 'trim|required|min_length[4]|max_length[32]|xss_clean|callback_check_login');
+            
             if ($this->form_validation->run() == FALSE)
-            {
                     $this->twig->render('login');
-            }
-            else{
+            else
                 $this->twig->render('home');
-            }
         }
         
-        public function check_login(){           
-       
-                $req = $this->inscription_model->login();
-                if(!$req){
-                    $this->form_validation->set_message('check_login', 'Invalid Email or password');
-                    return false;
-                }
-                else{
-                    foreach($req as $val){
-                        if (!$val->activer) {
-                            $this->form_validation->set_message('check_login', 'Utilisateur non Activer! ');
-                            return false;
-                        }
+        public function check_login()
+        {
+            $req = $this->inscription_model->login();
+            if(!$req)
+            {
+                $this->form_validation->set_message('check_login', 'Invalid Email or password');
+                return false;
+            }
+            else
+            {
+                foreach($req as $val)
+                {
+                    if (!$val->activer)
+                    {
+                        $this->form_validation->set_message('check_login', 'Utilisateur non Activer! ');
+                        return false;
+                    }
+                    
                     $login_in = array('id' => $val->id, 'email' => $val->email, 'nom' => $val->nom);
                     $this->session->set_userdata('login_in', $login_in);
-                    }
-                    return TRUE;
                 }
+                return TRUE;
              }
-       
+        }
         
-        function logout(){
+        public function logout()
+        {
             $this->session->unset_userdata('login_in');
             $this->session->sess_destroy();
             redirect('frontend');
         }
 
-        function loginfb(){
+        public function loginfb()
+        {
             $this->twig->render('inscription_fb');
         }
         
-        function registerfb(){
-           function parse_signed_request($signed_request, $secret) {
-            list($encoded_sig, $payload) = explode('.', $signed_request, 2); 
+        public function registerfb()
+        {
+            function parse_signed_request($signed_request, $secret)
+            {
+                list($encoded_sig, $payload) = explode('.', $signed_request, 2);
+                
+                // decode the data
+                $sig = base64_url_decode($encoded_sig);
+                $data = json_decode(base64_url_decode($payload), true);
 
-            // decode the data
-            $sig = base64_url_decode($encoded_sig);
-            $data = json_decode(base64_url_decode($payload), true);
+                if (strtoupper($data['algorithm']) !== 'HMAC-SHA256')
+                {
+                    error_log('Unknown algorithm. Expected HMAC-SHA256');
+                    return null;
+                }
 
-            if (strtoupper($data['algorithm']) !== 'HMAC-SHA256') {
-                error_log('Unknown algorithm. Expected HMAC-SHA256');
-                return null;
+                // check sig
+                $expected_sig = hash_hmac('sha256', $payload, $secret, $raw = true);
+                if ($sig !== $expected_sig)
+                {
+                    error_log('Bad Signed JSON signature!');
+                    return null;
+                }
+
+                return $data;
             }
 
-            // check sig
-            $expected_sig = hash_hmac('sha256', $payload, $secret, $raw = true);
-            if ($sig !== $expected_sig) {
-                error_log('Bad Signed JSON signature!');
-                return null;
-            }
-
-            return $data;
-            }
-
-            function base64_url_decode($input) {
+            function base64_url_decode($input)
+            {
                 return base64_decode(strtr($input, '-_', '+/'));
             }
 
-            if ($_REQUEST) {
-            $response = parse_signed_request($_REQUEST['signed_request'], 
-                                            'f46261dd081b144047d83d89b77fe1fc');
+            if ($_REQUEST)
+            {
+                $response = parse_signed_request($_REQUEST['signed_request'], 'f46261dd081b144047d83d89b77fe1fc');
             
-            $this->inscription_model->insert_inscription($response);
-            redirect('frontend/formsuccess');  
+                $this->inscription_model->insert_inscription($response);
+                redirect('frontend/formsuccess');  
             }
         }
 }

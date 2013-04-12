@@ -6,7 +6,8 @@ class Phonelogin_model extends CI_Model {
         parent::__construct();
     }
     
-    function login(){
+    function login()
+    {
         $this->db->select('id, nom, email, password, activer')
                 ->from('utilisateur')
                 ->where('email', $this->input->post('email') )
@@ -19,7 +20,8 @@ class Phonelogin_model extends CI_Model {
             return false;
     }
     
-    function setStatut(){
+    function setStatut()
+    {
         $data = array(
             'statut'     => $this->input->post('statut'),
             'user'       => $this->input->post('id'),
@@ -29,9 +31,11 @@ class Phonelogin_model extends CI_Model {
         $this->db->insert('statut', $data);
     }
     
-    function saveuploadimage($photo){
+    function saveuploadimage($photo)
+    {
         $statut = null;
-        if($this->input->post('statut')){
+        if($this->input->post('statut'))
+        {
             setStatut();
             $statut = $this->db->insert_id();
         }
