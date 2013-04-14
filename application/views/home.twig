@@ -6,6 +6,7 @@
 <body>
        
 page home : {% if getsessionhelper() %} {{ getsessionhelper()['nom'] }} | 
+<a href="/profil" id=''> Profil </a> |
 <a href="/inscription/logout" id='logoutsmart'> logout </a> 
 {% else %} 
 <a id="inscrismart" href="/inscription"> Inscription </a> | 
