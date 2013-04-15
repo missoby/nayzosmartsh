@@ -1,0 +1,22 @@
+<!DOCTYPE>
+<html>
+    <head>
+        <meta charset="utf-8" />
+        <title>Profil</title>
+    </head>
+
+    <body>
+        <p>
+            Profil | <a href="/modifier_profil">Modifier profil</a> | 
+            <a href="/modifier_password">Modifier mot de passe</a> | 
+            <a href="/">Home</a>
+        </p>
+        <p>
+            Nom: {{ getsessionhelper()['nom'] }}
+            <br />
+            Email: {{ getsessionhelper()['email'] }}
+        </p>
+    </body>
+</html>
+
+

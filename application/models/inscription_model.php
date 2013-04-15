@@ -1,18 +1,20 @@
 <?php
-class Inscription_model extends CI_Model {
+class Inscription_model extends CI_Model
+{
+    private $table = 'utilisateur';
 
-    function __construct()
+    public function __construct()
     {
         parent::__construct();
     }
     
-    function get_all_desabled()
+    public function get_all_desabled()
     {
-        $query = $this->db->get_where('utilisateur', array('activer' => 0));
+        $query = $this->db->get_where($this->table, array('activer' => 0));
         return $query->result();
     }
 
-    function insert_inscription($response='')
+    public function insert_inscription($response='')
     {
         if(!$response)
         $data = array(
@@ -31,27 +33,62 @@ class Inscription_model extends CI_Model {
             'activer' => 1,
         );
 
-        $this->db->insert('utilisateur', $data);
+        $this->db->insert($this->table, $data);
     }
 
-    function update_activer($id)
+    public function update_activer($id)
     {
         $data = array('activer' => 1);
 
-        $this->db->update('utilisateur', $data, array('id' => $id));
+        $this->db->update($this->table, $data, array('id' => $id));
     }
     
-    function login(){
+    public function login()
+    {
         $this->db->select('id, nom, email, password, activer')
-                ->from('utilisateur')
-                ->where('email', $this->input->post('email'))
-                ->where('password', sha1($this->input->post('password')))
-                ->limit(1);
+                 ->from($this->table)
+                 ->where('email', $this->input->post('email'))
+                 ->where('password', sha1($this->input->post('password')))
+                 ->limit(1);
+        
         $query = $this->db->get();
-        if($query->num_rows()==1)
+        
+        if($query->num_rows() == 1)
             return $query->result();
         else
             return false;
     }
+    
+    public function updateProfil($id)
+    {
+        if(empty($id))
+            return false;
+        
+        $data = array('nom' => $this->input->post('nom'), 'email' => $this->input->post('email'));
+        $this->db->update($this->table, $data, array('id' => $id));
+        return true;
+    }
+    
+    public function getPassword($id)
+    {
+        if(empty($id))
+            return false;
+        
+        return $this->db->select('password')->from($this->table)->where('id', $id)->get()->row()->password;
+    }
+
+    public function setPassword($id)
+    {
+        if(empty($id))
+            return false;
+        
+        $data = array('password' => sha1($this->input->post('new')));
+        $this->db->update($this->table, $data, array('id' => $id));
+        return true;
+    }
 
 }
+
+?>
+
+
