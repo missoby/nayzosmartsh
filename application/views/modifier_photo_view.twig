@@ -1,0 +1,43 @@
+<!DOCTYPE>
+<html>
+    <head>
+        <meta charset="utf-8" />
+        <title>Modifier Photo</title>
+    </head>
+
+    <body>
+        <div>
+            Modifier photo | <a href="/photo">Photo</a> |
+            <a href="/">Home</a>
+        </div>
+            
+            <div>
+                <form action="" method="post">
+                    <label>
+                        <strong>Localisation</strong>
+                    </label>
+                        <input type="text" name="localisation" value="{{ set_value('localisation', l) }}" />
+                    {{ form_error('localisation') }}
+                    <br />
+                    <label>
+                        <strong>Categorie</strong>
+                    </label>
+                    <select name="cat">
+                        <option value="Famille">Famille</option>
+                        <option value="Vacance">Vacance</option>
+                        <option value="Autres">Autres</option>
+                    </select>
+                    <br />
+                    <label>
+                        <strong>Statut</strong>
+                    </label>
+                    <textarea name="statut">{{ set_value('statut', s) }}</textarea>
+                    {{ form_error('statut') }}
+                    <br />
+                    <input type="submit" value="Modifier" />
+                </form>
+            </div>
+    </body>
+</html>
+
+

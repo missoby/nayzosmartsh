@@ -1,0 +1,34 @@
+<!DOCTYPE>
+<html>
+    <head>
+        <meta charset="utf-8" />
+        <title>Nouveau Statut</title>
+    </head>
+
+    <body>
+        <header>
+            Statut : <a href="/">Home</a> |
+                     <a href="/statut">Statut</a>
+        </header>
+            
+        <div>
+            <form action="" method="post">
+                <label>
+                    <strong>Localisation</strong>
+                </label>
+                    <input type="text" name="localisation" value="{{ set_value('localisation') }}" />
+                {{ form_error('localisation') }}
+                <br />
+                <label>
+                    <strong>Statut</strong>
+                </label>
+                <textarea name="statut">{{ set_value('statut') }}</textarea>
+                {{ form_error('statut') }}
+                <br />
+                <input type="submit" value="Ajouter" />
+            </form>
+        </div>
+    </body>
+</html>
+
+
