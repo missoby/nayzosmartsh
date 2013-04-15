@@ -6,11 +6,12 @@
     </head>
 
     <body>
-        <p>
-            Profil | <a href="/modifier_profil">Modifier profil</a> | 
-            <a href="/modifier_password">Modifier mot de passe</a> | 
-            <a href="/">Home</a>
-        </p>
+        <header>
+            Profil : <a href="/">Home</a> |
+            <a href="/profil/modifier_profil">Modifier profil</a> | 
+            <a href="/profil/modifier_password">Modifier mot de passe</a>
+            
+        </header>
         <p>
             Nom: {{ getsessionhelper()['nom'] }}
             <br />

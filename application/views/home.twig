@@ -1,23 +1,26 @@
+<!DOCTYPE>
 <html>
+    <head>
+        <meta charset="utf-8" />
+        <title>Smart Share</title>
+    </head>
     
- <head>
-  
-</head>
-<body>
-       
-page home : {% if getsessionhelper() %} {{ getsessionhelper()['nom'] }} | 
-<a href="/profil" id=''> Profil </a> |
-<a href="/inscription/logout" id='logoutsmart'> logout </a> 
-{% else %} 
-<a id="inscrismart" href="/inscription"> Inscription </a> | 
-<a id="loginsmart" href="/inscription/login"> Login </a> 
-{% endif %}
-
-<br>
-<a href="/">Home</a> <br/>
+    <body>
+        <header>
+            Home page : <a href="/">Home</a> | 
+            {% if getsessionhelper() %} {{ getsessionhelper()['nom'] }} | 
+            <a href="/profil" id=''> Profil </a> |
+            <a href="/photo" id=''> Photo </a> |
+            <a href="/statut" id=''> Statut </a> |
+            <a href="/inscription/logout" id='logoutsmart'> logout </a>
+            {% else %} 
+            <a id="inscrismart" href="/inscription"> Inscription </a> | 
+            <a id="loginsmart" href="/inscription/login"> Login </a> 
+            {% endif %}
+        </header>
 
 {# <script src="/assets/js/jquery-1.7.1.min.js"></script> #}
-</body>
+    </body>
 </html>
 
 

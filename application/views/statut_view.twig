@@ -1,0 +1,31 @@
+<!DOCTYPE>
+<html>
+    <head>
+        <meta charset="utf-8" />
+        <title>Statut</title>
+    </head>
+
+    <body>
+        <header>
+            Statut : <a href="/">Home</a> |
+                     <a href="/statut/nouveau">Nouveau statut</a>
+        </header>
+            
+        <div>
+            <ul>
+            {% for ph in res %}
+            <li>
+                {{ ph.statut }} | {{ ph.date_envoi }} | {{ ph.localisation }} | {{ ph.etat }} |
+                <a href="/statut/supprimer/{{ ph.id }}">Supprimer</a>
+                <a href="/statut/modifier/{{ ph.id }}">modifier</a>
+                {%if ph.partage == 0%}
+                <a href="/">Partager</a>
+                {% endif %}
+            </li>
+            {% endfor %}
+            </ul>
+        </div>
+    </body>
+</html>
+
+
