@@ -1,23 +1,22 @@
 <! DOCTYPE html>
 <html>
-<body>
-page Login :
-<br>
-
-{{ validation_errors() }}
-<br/>
-
-<form action="login" method="POST" >
-    <label>Email:</label> 
-    <input type="email" name="email" required="required"/>
-    <br/>
-    <label>Mot de Passe:</label> 
-    <input type="password" name="password" required="required"/>
-    
-    <br/><br/><br/> 
-    <input type="submit" value="Login"/>
-
-</form>
-
-</body>
+    <head>
+        <meta charset="utf-8" />
+        <title>Login</title>
+    </head>
+    <body>
+        <header>
+            Login : <a href="/">Home</a> |
+            <a href="/inscription">Inscription</a>
+        </header>
+        <form action="login" method="POST">
+            <label>Email:</label>
+            <input type="email" name="email" required="required"/>
+            <br/>
+            <label>Mot de Passe:</label>
+            <input type="password" name="password" required="required"/>
+            <br/>
+            <input type="submit" value="Login"/>
+        </form>
+    </body>
 </html>

@@ -1,28 +1,33 @@
-<! DOCTYPE html>
+<!DOCTYPE>
 <html>
-<body>
-page Inscription :
-<br>
+    <head>
+        <meta charset="utf-8" />
+        <title>Inscription</title>
+    </head>
+    <body>
+        <header>
+            Home page : <a href="/">Home</a> |
+            <a href="/inscription/login">Login</a>
+        </header>
 
-{{ validation_errors() }}
-<br/>
+        {{ validation_errors() }}
 
-<form action="inscription/saveform" method="POST" >
-    <label>Nom Complet:</label> 
-    <input type="text" name="nom" required="required"/>
-    <br/>
-    <label>Email:</label> 
-    <input type="email" name="email" required="required"/>
-    <br/>
-    <label>Mot de Passe:</label> 
-    <input type="password" name="password" required="required"/>
-    <br/>
-    <label>Confirmer mot de Passe:</label> 
-    <input type="password" name="password2" required="required"/>
-    <br/><br/><br/> 
-    <input type="submit" value="Enregistrer"/>
-
-</form>
-
-</body>
+        <form action="inscription/saveform" method="POST" >
+            <label>Nom Complet:</label>
+            <input type="text" name="nom" required="required"/>
+            <br/>
+            <label>Email:</label>
+            <input type="email" name="email" required="required"/>
+            <br/>
+            <label>Mot de Passe:</label>
+            <input type="password" name="password" required="required"/>
+            <br/>
+            <label>Confirmer mot de Passe:</label>
+            <input type="password" name="password2" required="required"/>
+            <br/>
+            <input type="submit" value="Enregistrer"/>
+        </form>
+    </body>
 </html>
+
+
