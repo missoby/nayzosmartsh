@@ -12,7 +12,7 @@ function js_url($nom)
 
 function img_url($nom)
 {
-    return base_url() . 'assets/images/' . $nom;
+    return base_url() . 'assets/img/' . $nom;
 }
 
 function img($nom, $alt = '')
