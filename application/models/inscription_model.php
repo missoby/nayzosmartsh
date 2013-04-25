@@ -59,6 +59,18 @@ class Inscription_model extends CI_Model
             return false;
     }
     
+    public function getUserData($fid) //Identique à login()
+    {
+        $query = $this->db->where('facebook_id', $fid)
+                    ->get($this->table);
+        
+        if($query->num_rows() == 1)
+            return $query->row();
+        else
+            return false;
+    }
+
+
     public function updateProfil($id)
     {
         if(empty($id))

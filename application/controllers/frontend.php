@@ -7,9 +7,44 @@ class Frontend extends CI_Controller
         parent::__construct();
         $this->twig->addFunction('getsessionhelper');
     }
+    
+    public function indexTest()
+    {
+        require_once 'assets/facebook_sdk_src/facebook.php';
+        
+        $param = array();
+        $param['appId'] = '444753728948897';
+        $param['secret'] = '5ab7c77a75fd646619cc98bde08e37e3';
+        $param['fileUpload'] = true; // pour envoyer des photos
+        //$param['cookie'] = true;
+        $fb = new Facebook($param);
+        
+        $uid = $fb->getUser();
+        if(empty($uid))
+        {
+            $ppp = array();
+            $ppp['scope'] = 'email';//, read_stream, friends_likes';//read_stream = fil d'actualité; friends_likes: mentions j'aime de vos amis
+            //$ppp['display'] = 'popup';
+            //$ppp['locale'] = 'fr_FR';
+            redirect($fb->getLoginUrl($ppp));
+        }
+        else
+        {
+            print_r($uid);
+            echo '<br /><br /><br />';
+            print_r($_SESSION);
+            echo '<br /><br /><br />';
+            $me = $fb->api('/me');
+            //print_r($me);
+            echo $me['email'];
+        }
+        
+        $this->load->view('home');
+    }
         
     public function index()
     {
+        print_r($this->session->all_userdata());
         $this->twig->render('home');
     }
         

@@ -1,15 +1,26 @@
 <?php if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 
 class Inscription extends CI_Controller
-{    
+{
+    private $fb;
+    
         public function __construct()
         {
                 parent::__construct();
 		$this->load->library('form_validation');
                 $this->load->model('inscription_model');
                 
-                $this->twig->addFunction('validation_errors');  
-                $this->twig->addFunction('getsessionhelper');        
+                $this->twig->addFunction('validation_errors');
+                $this->twig->addFunction('getsessionhelper');
+                
+                //Facebook Connect
+                require_once 'assets/facebook_sdk_src/facebook.php';
+                $param = array();
+                $param['appId'] = '444753728948897';
+                $param['secret'] = '5ab7c77a75fd646619cc98bde08e37e3';
+                $param['fileUpload'] = true; // pour envoyer des photos
+                $param['cookie'] = false;
+                $this->fb = new Facebook($param);
         }
 
 	public function index()
@@ -102,7 +113,7 @@ class Inscription extends CI_Controller
                         return false;
                     }
                     
-                    $login_in = array('id' => $val->id, 'email' => $val->email, 'nom' => $val->nom);
+                    $login_in = array('id' => $val->id, 'email' => $val->email, 'nom' => $val->nom, 'facebook_id' => $val->facebook_id);
                     $this->session->set_userdata('login_in', $login_in);
                 }
                 return TRUE;
@@ -111,12 +122,41 @@ class Inscription extends CI_Controller
         
         public function logout()
         {
+            $this->fb->destroySession();
             $this->session->unset_userdata('login_in');
             $this->session->sess_destroy();
-            redirect('frontend');
+            redirect('/');
+        }
+        
+        public function loginfb()
+        {
+            $uid = $this->fb->getUser();
+            if (empty($uid))
+            {
+                $ppp = array();
+                $ppp['scope'] = 'email';
+                $ppp['display'] = 'popup';
+                $ppp['locale'] = 'fr_FR';
+                redirect($this->fb->getLoginUrl($ppp));
+            }
+            else //User connecté avec facebook
+            {
+                $res = $this->inscription_model->getUserData($uid);
+                if(!$res)
+                {
+                    echo 'Erreur ID Facebook ou ID inexistant!!';
+                    return;
+                }
+                else //ID existant
+                {
+                    $login_in = array('id' => $res->id, 'email' => $res->email, 'nom' => $res->nom, 'facebook_id' => $res->facebook_id);
+                    $this->session->set_userdata('login_in', $login_in);
+                    redirect('/');
+                }
+            }
         }
 
-        public function loginfb()
+        public function loginfb55()
         {
             $this->twig->render('inscription_fb');
         }

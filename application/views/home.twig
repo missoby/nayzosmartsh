@@ -18,6 +18,12 @@
             <a id="loginsmart" href="/inscription/login"> Login </a> 
             {% endif %}
         </header>
+            
+            <div>
+                <p>ID  = {{getsessionhelper()['id']}}</p>
+                <p>FID = {{getsessionhelper()['facebook_id']}}</p>
+                <p></p>
+            </div>
 
 {# <script src="/assets/js/jquery-1.7.1.min.js"></script> #}
     </body>
