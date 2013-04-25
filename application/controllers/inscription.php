@@ -142,10 +142,24 @@ class Inscription extends CI_Controller
             else //User connecté avec facebook
             {
                 $res = $this->inscription_model->getUserData($uid);
-                if(!$res)
+                if(!$res) //ID inexistant
                 {
-                    echo 'Erreur ID Facebook ou ID inexistant!!';
-                    return;
+                    //Si on est arrivé ici, c'est que le user a utilisé le formulaire du site pour s'inscrire.
+                    //2 cas se presentent: Email d'inscription est le meme de facebook => resolu
+                    //-------------------: Email d'inscription != de email de facebook => faut rediriger le user
+                    //à un formulaire pour se connecter sur le site et prendre son ID pour lui affecter FID !!
+                    
+                    $me = $this->fb->api('/me');
+                    if(!$this->inscription_model->checkMail($me['email'], $uid))
+                    {
+                        echo 'Erreur ID Facebook ou ID inexistant!!<br/>ID = '. $uid.'<br />';
+                        echo 'Mail inscription != mail facebook';
+                        return;
+                    }
+                    else
+                    {
+                        redirect('/inscription/loginfb');
+                    }
                 }
                 else //ID existant
                 {
@@ -155,11 +169,62 @@ class Inscription extends CI_Controller
                 }
             }
         }
-
-        public function loginfb55()
+        
+        public function inscriptionfb()
         {
             $this->twig->render('inscription_fb');
         }
+        
+        public function getResponse()
+        {
+            if (!$_REQUEST)
+            {
+                echo '$_REQUEST is empty';
+            }
+            else
+            {
+                $response = $this->parse_signed_request($_REQUEST['signed_request'], $this->fb->getAppSecret());
+                /*echo '<pre>';
+                print_r($response);
+                echo '</pre>';
+                echo $response['user_id'];*/
+                $this->inscription_model->insert_inscription($response);
+                redirect('/');
+            }
+        }
+
+        function parse_signed_request($signed_request, $secret)
+        {
+            list($encoded_sig, $payload) = explode('.', $signed_request, 2); 
+
+            // decode the data
+            $sig = $this->base64_url_decode($encoded_sig);
+            $data = json_decode($this->base64_url_decode($payload), true);
+
+            if (strtoupper($data['algorithm']) !== 'HMAC-SHA256')
+            {
+                error_log('Unknown algorithm. Expected HMAC-SHA256');
+                return null;
+            }
+
+            // check sig
+            $expected_sig = hash_hmac('sha256', $payload, $secret, $raw = true);
+            if ($sig !== $expected_sig)
+            {
+                error_log('Bad Signed JSON signature!');
+                return null;
+            }
+            return $data;
+        }
+        
+        public function base64_url_decode($input)
+        {
+            return base64_decode(strtr($input, '-_', '+/'));
+        }
+
+        
+        
+        
         
         public function registerfb()
         {
