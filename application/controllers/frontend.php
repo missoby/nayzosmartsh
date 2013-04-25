@@ -8,7 +8,7 @@ class Frontend extends CI_Controller
         $this->twig->addFunction('getsessionhelper');
     }
     
-    public function index()
+    public function indexTest()
     {
         require_once 'assets/facebook_sdk_src/facebook.php';
         
@@ -42,8 +42,9 @@ class Frontend extends CI_Controller
         $this->load->view('home');
     }
         
-    public function indexOrigin()
+    public function index()
     {
+        print_r($this->session->all_userdata());
         $this->twig->render('home');
     }
         
