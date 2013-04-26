@@ -6,31 +6,25 @@ class Inscription extends CI_Controller
     
         public function __construct()
         {
-                parent::__construct();
-		$this->load->library('form_validation');
-                $this->load->model('inscription_model');
-                
-                $this->twig->addFunction('validation_errors');
-                $this->twig->addFunction('getsessionhelper');
-                
-                //Facebook Connect
-                require_once 'assets/facebook_sdk_src/facebook.php';
-                $param = array();
-                $param['appId'] = '444753728948897';
-                $param['secret'] = '5ab7c77a75fd646619cc98bde08e37e3';
-                $param['fileUpload'] = true; // pour envoyer des photos
-                $param['cookie'] = false;
-                $this->fb = new Facebook($param);
+            parent::__construct();
+            $this->load->model('inscription_model');
+
+            $this->twig->addFunction('validation_errors');
+            $this->twig->addFunction('getsessionhelper');
+
+            //Facebook Connect
+            require_once 'assets/facebook_sdk_src/facebook.php';
+            $param = array();
+            $param['appId'] = '444753728948897';
+            $param['secret'] = '5ab7c77a75fd646619cc98bde08e37e3';
+            $param['fileUpload'] = true; // pour envoyer des photos
+            $param['cookie'] = false;
+            $this->fb = new Facebook($param);
         }
 
-	public function index()
-	{                   
-            $this->twig->render('inscription');
-	}
-        
-        public function saveform()
-        {
-
+	public function index() //Inscription dans le site !!
+	{
+            $this->form_validation->set_rules('nom', 'Nom complet', 'trim|required');
             $this->form_validation->set_rules('email', 'Email', 'trim|required|valid_email');
             $this->form_validation->set_rules('password', 'Password', 'trim|required|min_length[4]|max_length[32]');
             $this->form_validation->set_rules('password2', 'Password Confirmation', 'trim|required|matches[password]');
@@ -42,7 +36,8 @@ class Inscription extends CI_Controller
             else
             {        
                 $this->inscription_model->insert_inscription();
-                $link = base_url('inscription/confirmation').'/'. sha1($this->input->post('email') . 'XkI85BtF');              
+                $link = base_url('inscription/confirmation').'/'. sha1($this->input->post('email') . 'XkI85BtF');
+                
                 //send email
                 $config = Array(
                     'protocol' => 'smtp',
@@ -63,31 +58,57 @@ class Inscription extends CI_Controller
                     $this->email->message('Pour Activer Votre compte, cliquez sur ce '. anchor($link, 'lien'));
                         
                     if (!$this->email->send())
-                      show_error($this->email->print_debugger());
-                    else 
-                      redirect('frontend/formsuccess');     
+                        show_error($this->email->print_debugger());
+                    else
+                        $this->twig->render('formsuccess', array('mail' => true));
             }
-        }
+	}
         
-        public function confirmation($link)
+        public function confirmation($link) //Confirmation du mail
         {
             $resultats = $this->inscription_model->get_all_desabled();
             
             foreach($resultats as $res)
             {
-                if(sha1($res->email . 'XkI85BtF') == $link){
-                        $this->inscription_model->update_activer($res->id);      
-                        redirect('frontend');     
-                        break;
+                if(sha1($res->email . 'XkI85BtF') == $link)
+                {
+                    $this->inscription_model->update_activer($res->id);      
+                    redirect('frontend');     
+                    break;
                 }
             }
-                      
         }
         
-        public function login()
+        public function inscriptionfb() //Formulaire d'inscription avec Facebook
         {
-            $this->form_validation->set_rules('email', 'Email', 'trim|required|min_length[4]|xss_clean');
-            $this->form_validation->set_rules('password', 'Password', 'trim|required|min_length[4]|max_length[32]|xss_clean|callback_check_login');
+            $this->twig->render('inscription_fb');
+        }
+        
+        public function getResponse() //Traitement des données recu par fb apres inscription avec inscriptionfb()
+        {
+            if (!$_REQUEST)
+            {
+                echo '$_REQUEST is empty';
+                echo '<br />';
+                echo anchor('/', 'Home');
+            }
+            else
+            {
+                $response = $this->parse_signed_request($_REQUEST['signed_request'], $this->fb->getAppSecret());
+                $this->inscription_model->insert_inscription($response);
+                $this->twig->render('formsuccess', array('mail' => false));
+                
+                /*echo '<pre>';
+                print_r($response);
+                echo '</pre>';
+                echo $response['user_id'];*/
+            }
+        }
+        
+        public function login() //login depuis le site
+        {
+            $this->form_validation->set_rules('email', 'Email', 'trim|required|valid_email|xss_clean');
+            $this->form_validation->set_rules('password', 'Mot de passe', 'trim|required|min_length[4]|max_length[255]|xss_clean|callback_check_login');
             
             if ($this->form_validation->run() == FALSE)
                     $this->twig->render('login');
@@ -95,9 +116,10 @@ class Inscription extends CI_Controller
                 $this->twig->render('home');
         }
         
-        public function check_login()
+        public function check_login() //Fonction de verification de login (callback)
         {
             $req = $this->inscription_model->login();
+            
             if(!$req)
             {
                 $this->form_validation->set_message('check_login', 'Invalid Email or password');
@@ -105,60 +127,67 @@ class Inscription extends CI_Controller
             }
             else
             {
-                foreach($req as $val)
+                if (!$req->activer)
                 {
-                    if (!$val->activer)
-                    {
-                        $this->form_validation->set_message('check_login', 'Utilisateur non Activer! ');
-                        return false;
-                    }
-                    
-                    $login_in = array('id' => $val->id, 'email' => $val->email, 'nom' => $val->nom, 'facebook_id' => $val->facebook_id);
-                    $this->session->set_userdata('login_in', $login_in);
+                    $this->form_validation->set_message('check_login', 'Utilisateur non Activé!');
+                    return false;
                 }
-                return TRUE;
+                
+                //Test de l'ID Facebook
+                if($req->facebook_id == 0)
+                    $this->associer_facebookID($req->id);
+                    
+                $login_in = array('id' => $req->id, 'email' => $req->email, 'nom' => $req->nom, 'facebook_id' => $req->facebook_id);
+                $this->session->set_userdata('login_in', $login_in);
+                return true;
              }
         }
         
-        public function logout()
+        public function associer_facebookID($id) //Association du facebook_id au mail correspondant
         {
-            $this->fb->destroySession();
-            $this->session->unset_userdata('login_in');
-            $this->session->sess_destroy();
-            redirect('/');
+            $uid = $this->fb->getUser();
+            if (empty($uid))
+            {
+                $ppp = array();
+                $ppp['redirect_uri'] = 'http://localhost:8094/inscription/associer_facebookID/'.$id;
+                $ppp['display'] = 'popup';
+                redirect($this->fb->getLoginUrl($ppp));
+            }
+            else
+            {
+                $this->inscription_model->update_facebookID($id, $uid);
+                redirect('inscription/login');
+            }
         }
         
-        public function loginfb()
+        public function loginfb() //Formulaire de connexion du Facebook
         {
             $uid = $this->fb->getUser();
             if (empty($uid))
             {
                 $ppp = array();
                 $ppp['scope'] = 'email';
+                $ppp['redirect_uri'] = 'http://localhost:8094/inscription/loginfb/';
                 $ppp['display'] = 'popup';
-                $ppp['locale'] = 'fr_FR';
                 redirect($this->fb->getLoginUrl($ppp));
             }
             else //User connecté avec facebook
             {
                 $res = $this->inscription_model->getUserData($uid);
+                $me = $this->fb->api('/me');
+                
                 if(!$res) //ID inexistant
                 {
-                    //Si on est arrivé ici, c'est que le user a utilisé le formulaire du site pour s'inscrire.
-                    //2 cas se presentent: Email d'inscription est le meme de facebook => resolu
-                    //-------------------: Email d'inscription != de email de facebook => faut rediriger le user
-                    //à un formulaire pour se connecter sur le site et prendre son ID pour lui affecter FID !!
-                    
-                    $me = $this->fb->api('/me');
-                    if(!$this->inscription_model->checkMail($me['email'], $uid))
+                    //User inscri sur le site avec formulaire du site et email inscri == email facebook
+                    if($this->inscription_model->checkMail($me['email'], $uid))
                     {
-                        echo 'Erreur ID Facebook ou ID inexistant!!<br/>ID = '. $uid.'<br />';
-                        echo 'Mail inscription != mail facebook';
-                        return;
+                        //facebook ID associé!!
+                        redirect('inscription/loginfb');
                     }
-                    else
+                    else //Soit user non inscri ou email inscri != email Facebook
                     {
-                        redirect('/inscription/loginfb');
+                        //Cette fonction va verifier l'inscri du user et lui associer le FID si necessaire
+                        redirect('inscription/login');
                     }
                 }
                 else //ID existant
@@ -170,30 +199,16 @@ class Inscription extends CI_Controller
             }
         }
         
-        public function inscriptionfb()
+        public function logout() //Deconnexion
         {
-            $this->twig->render('inscription_fb');
+            $this->fb->destroySession();
+            $this->session->unset_userdata('login_in');
+            $this->session->sess_destroy();
+            redirect('/');
         }
         
-        public function getResponse()
-        {
-            if (!$_REQUEST)
-            {
-                echo '$_REQUEST is empty';
-            }
-            else
-            {
-                $response = $this->parse_signed_request($_REQUEST['signed_request'], $this->fb->getAppSecret());
-                /*echo '<pre>';
-                print_r($response);
-                echo '</pre>';
-                echo $response['user_id'];*/
-                $this->inscription_model->insert_inscription($response);
-                redirect('/');
-            }
-        }
-
-        function parse_signed_request($signed_request, $secret)
+        /***************************************************************************************************/
+        function parse_signed_request($signed_request, $secret) //Fonction prise de l'API Facebook
         {
             list($encoded_sig, $payload) = explode('.', $signed_request, 2); 
 
@@ -217,16 +232,22 @@ class Inscription extends CI_Controller
             return $data;
         }
         
-        public function base64_url_decode($input)
+        public function base64_url_decode($input) //Fonction prise de l'API Facebook
         {
             return base64_decode(strtr($input, '-_', '+/'));
         }
-
+        /***************************************************************************************************/
         
         
         
         
-        public function registerfb()
+        public function saveform()
+        {
+            echo 'Fonction ZEYDA!!';
+        }
+        
+        //Fonction ZEYDA!!
+        /*public function registerfb()
         {
             function parse_signed_request($signed_request, $secret)
             {
@@ -265,5 +286,40 @@ class Inscription extends CI_Controller
                 $this->inscription_model->insert_inscription($response);
                 redirect('frontend/formsuccess');  
             }
-        }
+        }*/
+        
+        /*public function indexTest()
+        {
+            require_once 'assets/facebook_sdk_src/facebook.php';
+
+            $param = array();
+            $param['appId'] = '444753728948897';
+            $param['secret'] = '5ab7c77a75fd646619cc98bde08e37e3';
+            $param['fileUpload'] = true; // pour envoyer des photos
+            //$param['cookie'] = true;
+            $fb = new Facebook($param);
+
+            $uid = $fb->getUser();
+            if(empty($uid))
+            {
+                $ppp = array();
+                $ppp['scope'] = 'email';//, read_stream, friends_likes';//read_stream = fil d'actualité; friends_likes: mentions j'aime de vos amis
+                //$ppp['display'] = 'popup';
+                //$ppp['locale'] = 'fr_FR';
+                redirect($fb->getLoginUrl($ppp));
+            }
+            else
+            {
+                print_r($uid);
+                echo '<br /><br /><br />';
+                print_r($_SESSION);
+                echo '<br /><br /><br />';
+                $me = $fb->api('/me');
+                //print_r($me);
+                echo $me['email'];
+            }
+
+            $this->load->view('home');
+        }*/
+
 }

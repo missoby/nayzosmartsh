@@ -19,7 +19,7 @@ class Profil extends CI_Controller
     {
         //$this->form_validation->set_error_delimiters('<p class="form_erreur">', '</p>');
         
-        $this->form_validation->set_rules('nom', '\'Nom\'', 'trim|required|max_length[30]|alpha_dash|encode_php_tags|xss_clean');
+        $this->form_validation->set_rules('nom', '\'Nom\'', 'trim|required|max_length[30]|xss_clean');
         $this->form_validation->set_rules('email', '\'Email\'', 'trim|required|valid_email|xss_clean');
         
         if($this->form_validation->run())

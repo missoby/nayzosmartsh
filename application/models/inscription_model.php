@@ -17,12 +17,18 @@ class Inscription_model extends CI_Model
     public function getUserData($fid) //Identique à login() en desous
     {
         $query = $this->db->where('facebook_id', $fid)
-                    ->get($this->table);
+                          ->get($this->table);
         
-        if($query->num_rows() == 1)
+        if($query->num_rows() >= 1) //Normalement == 1 car l'id est unisue donc il existe un seul row mais on est en mode test donc on peut avoir plusieurs ligne avec le meme ID facebook
             return $query->row();
         else
             return false;
+    }
+    
+    public function update_facebookID($id, $fid)
+    {
+        $data = array('facebook_id' => $fid);
+        $this->db->update($this->table, $data, array('id' => $id));
     }
 
     public function insert_inscription($response='')
@@ -34,7 +40,7 @@ class Inscription_model extends CI_Model
             'nom'      => $this->input->post('nom'),            
             'date_inscription' => date('Y-m-d H:i:s'),
             'activer' => 0,
-            'facebook_id' => NULL
+            'facebook_id' => 0
             );
         else
             $data = array(
@@ -73,16 +79,12 @@ class Inscription_model extends CI_Model
     
     public function login()
     {
-        $this->db->select('id, nom, email, password, activer, facebook_id')
-                 ->from($this->table)
-                 ->where('email', $this->input->post('email'))
-                 ->where('password', sha1($this->input->post('password')))
-                 ->limit(1);
-        
-        $query = $this->db->get();
+        $query = $this->db->where('email', $this->input->post('email'))
+                          ->where('password', sha1($this->input->post('password')))
+                          ->get($this->table);
         
         if($query->num_rows() == 1)
-            return $query->result();
+            return $query->row();
         else
             return false;
     }
