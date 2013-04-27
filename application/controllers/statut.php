@@ -5,7 +5,6 @@ class Statut extends CI_Controller
     public function __construct()
     {
         parent::__construct();
-        $this->load->library('form_validation');
         $this->twig->addFunction('getsessionhelper');
         $this->load->model('statut_model', 'statutManager');
     }

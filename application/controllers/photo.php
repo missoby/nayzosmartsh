@@ -5,10 +5,10 @@ class Photo extends CI_Controller
     public function __construct()
     {
         parent::__construct();
-        $this->twig->addFunction('getsessionhelper');
-        $this->load->library('form_validation');
         $this->load->model('photo_model', 'photoManager');
         $this->load->model('statut_model', 'statutManager');
+        
+        $this->twig->addFunction('getsessionhelper');
     }
         
     public function index($categorie = "")
@@ -35,7 +35,12 @@ class Photo extends CI_Controller
             $data['res'] = $this->photoManager->getPhotosByCategorie(getsessionhelper()['id'], $categorie);
             foreach($data['res'] as $value)
             {
-                $value->statut = $this->statutManager->getStatut($value->statut);
+                $value->statut = $this->statutManager->getStatut($value->statut)->statut;
+                
+                if($value->partage == 0)
+                    $value->etat = 'Image non partagé';
+                else
+                    $value->etat = 'Image partagé';
             }
             $this->twig->render('photo_view', $data);
         }
@@ -72,7 +77,7 @@ class Photo extends CI_Controller
         }
     }
 
-        public function supprimer($id)
+    public function supprimer($id)
     {
         if(empty($id))
             exit('Erreur ID image');

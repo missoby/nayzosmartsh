@@ -16,16 +16,21 @@
             {% for ph in res %}
             <li>
                 {{ ph.statut }} | {{ ph.date_envoi }} | {{ ph.localisation }} | {{ ph.etat }} |
-                <a href="/statut/supprimer/{{ ph.id }}">Supprimer</a>
+                <a href="/statut/supprimer/{{ ph.id }}" class="deleteadmin">Supprimer</a>
                 <a href="/statut/modifier/{{ ph.id }}">modifier</a>
                 {%if ph.partage == 0%}
                 <a href="/">Partager</a>
+                {% else %}
+                <a href="/">Repartager</a>
                 {% endif %}
             </li>
             {% endfor %}
             </ul>
         </div>
     </body>
+    
+    <script src="{{js_url('jquery-1.9.1.min')}}"></script>
+    <script src="{{js_url('smart')}}"></script>
 </html>
 
 

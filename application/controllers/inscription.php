@@ -238,14 +238,6 @@ class Inscription extends CI_Controller
         }
         /***************************************************************************************************/
         
-        
-        
-        
-        public function saveform()
-        {
-            echo 'Fonction ZEYDA!!';
-        }
-        
         //Fonction ZEYDA!!
         /*public function registerfb()
         {

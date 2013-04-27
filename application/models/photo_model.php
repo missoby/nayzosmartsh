@@ -38,7 +38,7 @@ class Photo_model extends CI_Model
                     'date_envoi' => $ddd,
                     'localisation' => $this->input->post('localisation'),
                     'partage' => 0,
-                    'attache' => 0,
+                    'attache' => 1,
                     'user' => getsessionhelper()['id']);
         
         $this->db->insert('statut', $ds);
