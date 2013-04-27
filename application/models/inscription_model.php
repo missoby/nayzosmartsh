@@ -13,6 +13,23 @@ class Inscription_model extends CI_Model
         $query = $this->db->get_where($this->table, array('activer' => 0));
         return $query->result();
     }
+    
+    public function getUserData($fid) //Identique à login() en desous
+    {
+        $query = $this->db->where('facebook_id', $fid)
+                          ->get($this->table);
+        
+        if($query->num_rows() >= 1) //Normalement == 1 car l'id est unisue donc il existe un seul row mais on est en mode test donc on peut avoir plusieurs ligne avec le meme ID facebook
+            return $query->row();
+        else
+            return false;
+    }
+    
+    public function update_facebookID($id, $fid)
+    {
+        $data = array('facebook_id' => $fid);
+        $this->db->update($this->table, $data, array('id' => $id));
+    }
 
     public function insert_inscription($response='')
     {
@@ -23,7 +40,8 @@ class Inscription_model extends CI_Model
             'nom'      => $this->input->post('nom'),            
             'date_inscription' => date('Y-m-d H:i:s'),
             'activer' => 0,
-        );
+            'facebook_id' => 0
+            );
         else
             $data = array(
             'password' => sha1($response['registration']['password']),
@@ -31,9 +49,25 @@ class Inscription_model extends CI_Model
             'nom'      => $response['registration']['name'],            
             'date_inscription' => date('Y-m-d H:i:s'),
             'activer' => 1,
-        );
+            'facebook_id' => $response['user_id']
+            );
 
         $this->db->insert($this->table, $data);
+    }
+    
+    public function checkMail($mail, $fid)
+    {
+        $query = $this->db->where('email', $mail)->get($this->table);
+        
+        if($query->num_rows() == 1)
+        {
+            $res = $query->row();
+            $data = array('facebook_id' => $fid);
+            $this->db->update($this->table, $data, array('id' => $res->id));
+            return true;
+        }
+        else
+            return false;
     }
 
     public function update_activer($id)
@@ -45,31 +79,15 @@ class Inscription_model extends CI_Model
     
     public function login()
     {
-        $this->db->select('id, nom, email, password, activer')
-                 ->from($this->table)
-                 ->where('email', $this->input->post('email'))
-                 ->where('password', sha1($this->input->post('password')))
-                 ->limit(1);
-        
-        $query = $this->db->get();
-        
-        if($query->num_rows() == 1)
-            return $query->result();
-        else
-            return false;
-    }
-    
-    public function getUserData($fid) //Identique à login()
-    {
-        $query = $this->db->where('facebook_id', $fid)
-                    ->get($this->table);
+        $query = $this->db->where('email', $this->input->post('email'))
+                          ->where('password', sha1($this->input->post('password')))
+                          ->get($this->table);
         
         if($query->num_rows() == 1)
             return $query->row();
         else
             return false;
     }
-
 
     public function updateProfil($id)
     {

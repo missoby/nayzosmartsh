@@ -7,17 +7,19 @@
     <body>
         <header>
             Home page : <a href="/">Home</a> |
-            <a href="/inscription/login">Login</a>
+            <a href="/inscription/login">Login</a> |
+            <a href="/inscription/inscriptionfb">Inscription avec votre compte Facebook</a>
         </header>
 
         {{ validation_errors() }}
 
-        <form action="inscription/saveform" method="POST" >
+        <!-- <form action="inscription/saveform" method="POST" > --> 
+        <form action="" method="POST" >
             <label>Nom Complet:</label>
-            <input type="text" name="nom" required="required"/>
+            <input type="text" name="nom" required="required" value="{{set_value('nom')}}" />
             <br/>
             <label>Email:</label>
-            <input type="email" name="email" required="required"/>
+            <input type="email" name="email" required="required" value="{{set_value('email')}}" />
             <br/>
             <label>Mot de Passe:</label>
             <input type="password" name="password" required="required"/>

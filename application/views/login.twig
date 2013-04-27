@@ -1,4 +1,4 @@
-<! DOCTYPE html>
+<!DOCTYPE html>
 <html>
     <head>
         <meta charset="utf-8" />
@@ -10,9 +10,12 @@
             <a href="/inscription">Inscription</a> |
             <a href="/inscription/loginfb">Login avec Facebook</a>
         </header>
-        <form action="login" method="POST">
+            
+        {{ validation_errors() }}
+            
+        <form action="/inscription/login" method="POST">
             <label>Email:</label>
-            <input type="email" name="email" required="required"/>
+            <input type="email" name="email" required="required" />
             <br/>
             <label>Mot de Passe:</label>
             <input type="password" name="password" required="required"/>
@@ -21,3 +24,5 @@
         </form>
     </body>
 </html>
+
+
