@@ -1,5 +1,7 @@
 <?php if ( ! defined('BASEPATH')) exit('No direct script access allowed');
+
 header('Access-Control-Allow-Origin: *');
+
 class Phonelogin extends CI_Controller
 {
     public $tableau = array();
@@ -7,8 +9,6 @@ class Phonelogin extends CI_Controller
         public function __construct()
         {
                 parent::__construct();
-		$this->load->library('form_validation');
-                
                 $this->load->model('inscription_model');
                 $this->load->model('phonelogin_model');
                 
@@ -18,8 +18,8 @@ class Phonelogin extends CI_Controller
 
 	public function index()
 	{
+            echo 'Nothing!!';
 	}
-
         
         public function login()
         {
@@ -104,3 +104,5 @@ class Phonelogin extends CI_Controller
             }
 	}
 }
+
+
