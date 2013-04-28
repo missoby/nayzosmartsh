@@ -1,36 +1,44 @@
-<!DOCTYPE>
-<html>
-    <head>
-        <meta charset="utf-8" />
-        <title>Statut</title>
-    </head>
+{% extends "/layout.twig" %}
 
-    <body>
-        <header>
-            Statut : <a href="/">Home</a> |
-                     <a href="/statut/nouveau">Nouveau statut</a>
-        </header>
-            
-        <div>
-            <ul>
-            {% for ph in res %}
-            <li>
-                {{ ph.statut }} | {{ ph.date_envoi }} | {{ ph.localisation }} | {{ ph.etat }} |
-                <a href="/statut/supprimer/{{ ph.id }}" class="deleteadmin">Supprimer</a>
-                <a href="/statut/modifier/{{ ph.id }}">modifier</a>
-                {%if ph.partage == 0%}
-                <a href="/">Partager</a>
-                {% else %}
-                <a href="/">Repartager</a>
-                {% endif %}
-            </li>
-            {% endfor %}
-            </ul>
-        </div>
-    </body>
+{% block title %} {{parent()}} - Edit Password{% endblock title %}
+{#---Header---#}
+{%block header%}
+    <header class="bar-top"></header>
+{%endblock header%}
     
-    <script src="{{js_url('jquery-1.9.1.min')}}"></script>
+{%block content%}
+    <div class="span12 well2">
+         <a href="/statut/nouveau" class="btn pull-right">New Status</a>
+          <table class="table table-striped  table-bordered">
+              <tr>
+                  <th>Status</th>
+                  <th>Date</th>
+                  <th>Localisation</th>
+                  <th>State</th>
+                  <th>Action</th>
+              </tr>
+            {% for ph in res %}
+            <tr>
+                <td>{{ ph.statut }} </td>
+                <td> {{ ph.date_envoi }} </td>
+                <td>{{ ph.localisation }} </td>
+                <td>{{ ph.etat }} </td>
+                <td>
+                    <a href="/statut/modifier/{{ ph.id }}" class="btn" title="Edit Status"> <i class="icon-edit"></i></a>
+                    <a href="/statut/supprimer/{{ ph.id }}" class="btn deleteadmin" title="Delete Status"> <i class="icon-trash"></i></a>
+                    {%if ph.partage == 0%}
+                    <a href="" class="btn" title="Share Status"> <i class="icon-share-alt"></i></a>
+                    {% endif %}
+                </td>
+            </tr>
+            {% endfor %}
+            </table>
+        </div>
+    </div> 
+{%endblock content%}
+{% block js %}
     <script src="{{js_url('smart')}}"></script>
-</html>
-
-
+{% endblock js %}
+    
+    
+    

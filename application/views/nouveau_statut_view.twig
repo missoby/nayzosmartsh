@@ -1,34 +1,27 @@
-<!DOCTYPE>
-<html>
-    <head>
-        <meta charset="utf-8" />
-        <title>Nouveau Statut</title>
-    </head>
+{% extends "/layout.twig" %}
 
-    <body>
-        <header>
-            Statut : <a href="/">Home</a> |
-                     <a href="/statut">Statut</a>
-        </header>
-            
-        <div>
-            <form action="" method="post">
-                <label>
-                    <strong>Localisation</strong>
-                </label>
-                    <input type="text" name="localisation" value="{{ set_value('localisation') }}" />
-                {{ form_error('localisation') }}
-                <br />
-                <label>
-                    <strong>Statut</strong>
-                </label>
-                <textarea name="statut">{{ set_value('statut') }}</textarea>
-                {{ form_error('statut') }}
-                <br />
-                <input type="submit" value="Ajouter" />
-            </form>
-        </div>
-    </body>
-</html>
+{% block title %} {{parent()}} - New Status{% endblock title %}
+{#---Header---#}
+{%block header%}
+    <header class="bar-top"></header>
+{%endblock header%}
+    
+{%block content%}
+    <div class="span4 offset4 well2">
+            <form method="POST" action="" accept-charset="UTF-8">
+            <fieldset>
+                <legend> New Status </legend>
+                <input type="text" class="span4" name="localisation" placeholder="Localisation" value="{{ set_value('localisation') }}" />
+                <div class="text-error">{{ form_error('localisation') }}</div>
+                
+                <textarea name="statut" class="span4" rows="4" placeholder="write your Status">{{ set_value('statut') }}</textarea>
+                <div class="text-error">{{ form_error('statut') }}</div>
 
+                
+
+                <input type="submit" name="submit" class="btn btn-block btn-inverse" value="Add Status">
+            </fieldset>
+        </form>
+    </div> 
+{%endblock content%}
 
