@@ -1,28 +1,31 @@
-<!DOCTYPE html>
-<html>
-    <head>
-        <meta charset="utf-8" />
-        <title>Login</title>
-    </head>
-    <body>
-        <header>
-            Login : <a href="/">Home</a> |
-            <a href="/inscription">Inscription</a> |
-            <a href="/inscription/loginfb">Login avec Facebook</a>
-        </header>
-            
-        {{ validation_errors() }}
-            
-        <form action="/inscription/login" method="POST">
-            <label>Email:</label>
-            <input type="email" name="email" required="required" />
-            <br/>
-            <label>Mot de Passe:</label>
-            <input type="password" name="password" required="required"/>
-            <br/>
-            <input type="submit" value="Login"/>
-        </form>
-    </body>
-</html>
+{% extends "/layout.twig" %}
+
+{% block title %} {{parent()}} - Login{% endblock title %}
+{#---Header---#}
+{%block header%}
+    <header class="bar-top"></header>
+{%endblock header%}
+    
+{%block content%}
+    <div class="row">
+        <div class="span4 offset4 well2">
+            <form method="POST" action="/inscription/login" accept-charset="UTF-8">
+                <fieldset>
+                    <legend>Please Sign In</legend>
+                    <div class="error-form">
+                        {{ validation_errors() }}
+                    </div>
+                    <input type="text" class="span4" name="email" placeholder="Your Email" required="required">
+                    <input type="password" class="span4" name="password" placeholder="Your Password" required="required">
+                    <input type="submit" name="submit" class="btn btn-block btn-inverse" value="Sign in">
+                    <label style="text-align:center;margin-top:5px">or</label>
+                    <button class="btn btn-primary btn-block" type="button" id="sign-in-google" onClick="location.href='/inscription/loginfb'"><img src="{{base_url()}}assets/img/fb.png"> Sign In with Facebook</button>
+                </fieldset>
+            </form>    
+        </div>
+   </div>
+{%endblock content%}
+ 
+
 
 
