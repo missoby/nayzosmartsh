@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <title>{% block title %}Smart Share{% endblock title %}</title>
+        <meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width, height=device-height, target-densitydpi=device-dpi" />      
+        
+        <!--stylesheet-->
+       	<link href="{{base_url()}}assets/css/index.css" rel="stylesheet" type="text/css"  />
+       	<link href="{{base_url()}}assets/css/bootstrap.css" rel="stylesheet" type="text/css"  />
+        <link href="{{base_url()}}assets/css/bootstrap-responsive.css" rel="stylesheet" type="text/css" />
+        {% block head %} {% endblock head %}
+    </head>
+    <body>
+        {#---Nav---#}
+        {%block nav%}
+         <div class="navbar navbar-fixed-top">
+            <div class="navbar-inner">
+                <div class="container">
+                    <button type="button" class="btn btn-inverse btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
+                        <a class="brand" href="/"><img src="{{base_url()}}assets/img/logo.png"></a>
+                    <div class="nav-collapse collapse">
+                       {% if getsessionhelper() %} 
+                        <ul class="nav" id="main-menu-left">
+                            <li><a href="/"><i class="icon-home icon-white"></i> Home</a></li>
+                            <li><a href="/photo"> Photo </a></li>
+                            <li><a href="/statut"> Status </a></li>
+                        </ul>
+                        <ul class="nav pull-right"> 
+                            <li class="dropdown">
+                                <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="icon-user icon-white"></i> {{ getsessionhelper()['nom'] }} <b class="caret"></b></a>
+                                <ul class="dropdown-menu">
+                                     <li><a href="/profil">Profil</a></li>
+                                    <li class="divider"></li>
+                                    <li><a href="/inscription/logout" id='logoutsmart'><i class="icon-off"></i> Logout</a></li>
+                                </ul>
+                            </li>
+                       </ul>
+                       {% else %}
+                        <ul class="nav pull-right">
+                            <li><a id="inscrismart" href="/inscription">Register</a></li>
+                            <li><a id="loginsmart" href="/inscription/login"><i class="icon-user icon-white"></i> Login</a></li>
+                        </ul>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    {%endblock nav%}
+        {%block header%} {%endblock header%}   
+        {#---Container---#}
+        {%block container%}
+        <div class="container">
+            <div class="row">
+               {%block content%}{%endblock content%}
+            </div>
+     </div> 
+     {%endblock container%}
+    </body>
+    {#---SCRIPT---#} 
+    <script src="{{base_url()}}assets/js/jquery-1.9.1.min.js"></script>
+    <script src="{{base_url()}}assets/js/bootstrap.js"></script>
+    {% block js %} {% endblock js %} 
+</html>

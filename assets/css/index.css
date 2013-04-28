@@ -1,0 +1,82 @@
+h2 { text-align: center;}
+
+.introsmart { 
+
+}
+
+.connexion {
+    display: none;
+}	
+
+.alert-error p {
+    font-weight: bold;
+}
+
+.CarouselImg {
+    width: auto;
+    height: 370px;
+    max-height: 370px;
+}
+
+.picture-icon {
+    background-image: url('../img/picture.png');
+    background-repeat: no-repeat;
+    padding-left: 22px;
+    margin-left: 23px;
+} 
+.whrite-icon {
+    background-image: url('../img/write.png');
+    background-repeat: no-repeat;
+    padding-left: 22px;
+    margin-left: 23px;
+} 
+.tchat-icon {
+    background-image: url('../img/tchat.png');
+    background-repeat: no-repeat;
+    padding-left: 22px;
+    margin-left: 23px;
+} 
+.photo-icon {
+    background-image: url('../img/photo.png');
+    background-repeat: no-repeat;
+    padding-left: 22px;
+    margin-left: 23px;
+} 
+
+.well2 {
+    min-height: 20px;
+    padding: 19px;
+    margin-top: 20px;
+    margin-bottom: 20px;
+    border: 1px solid rgba(255,255,255,0.5);
+    box-shadow: 0px 0px 3px 1px rgba(0, 0, 0, 0.3);
+    border-radius: 5px;
+    background-color: rgba(255, 255, 255, 0.53);
+}
+
+.load {
+    position: absolute;
+    background-color: rgba(148, 147, 147, 0.41);
+    width: 100%;
+    height: 100%;
+}
+.bar-top{
+    background-image: url('../img/barre.jpg');
+    background-repeat: no-repeat;
+    background-size: 100%; 
+    height: 186px;
+    margin-bottom: 19px;
+}
+
+.error-form p {
+color: #b94a48;
+background-color: #f2dede;
+padding: 8px 35px 8px 14px;
+margin-bottom: 20px;
+text-shadow: 0 1px 0 rgba(255, 255, 255, 0.5);
+
+border: 1px solid rgb(206, 129, 135);
+-webkit-border-radius: 4px;
+-moz-border-radius: 4px;
+border-radius: 4px;
+}

@@ -1,18 +1,22 @@
-<!DOCTYPE>
-<html>
-    <head>
-        <meta charset="utf-8" />
-        <title>Inscription terminée</title>
-    </head>
+{% extends "/layout.twig" %}
+
+{% block title %} {{parent()}} - Edit Status{% endblock title %}
+{#---Header---#}
+{%block header%}
+    <header class="bar-top"></header>
+{%endblock header%}
+    
+{%block content%}
+    <div class="span6 offset3 well2">
     <body>
-        Inscription effectuée avec succès.
-        <br />
+        <div class="alert alert-success text-center">Inscription effectuée avec succès.</div>
+      
         {% if mail %}
-            un email est envoyé, vous devez activer votre compte.
+        <div class="alert alert-info text-center">Un email est envoyé, vous devez activer votre compte.  </div>
         {% endif %}
-        <a href="/">Home</a>
-        <br />
-    </body>
-</html>
+     
+    </div>
+    </div> 
+{%endblock content%}
 
 
