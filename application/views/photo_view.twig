@@ -20,9 +20,9 @@
                     <a href="/photo/supprimer/{{ ph.id }}" class="deleteadmin">Supprimer</a>
                     <a href="/photo/modifier/{{ ph.id }}">modifier</a>
                     {%if ph.partage == 0%}
-                    <a href="/">Partager</a>
+                    <a href="/photo/publierfb/{{ ph.id }}">Partager</a>
                     {% else %}
-                    <a href="/">Repartager</a>
+                    <a href="/photo/publierfb/{{ ph.id }}">Repartager</a>
                     {% endif %}
                 </li>
                 {% endfor %}

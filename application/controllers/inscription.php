@@ -149,7 +149,7 @@ class Inscription extends CI_Controller
             if (empty($uid))
             {
                 $ppp = array();
-                $ppp['scope'] = 'email, publish_actions';
+                $ppp['scope'] = 'email, read_stream, publish_actions';
                 $ppp['redirect_uri'] = 'http://localhost:8094/inscription/associer_facebookID/'.$id;
                 $ppp['display'] = 'popup';
                 redirect($this->fb->getLoginUrl($ppp));
@@ -167,7 +167,7 @@ class Inscription extends CI_Controller
             if (empty($uid))
             {
                 $ppp = array();
-                $ppp['scope'] = 'email, publish_actions';
+                $ppp['scope'] = 'email, read_stream, publish_actions';
                 $ppp['redirect_uri'] = 'http://localhost:8094/inscription/loginfb/';
                 $ppp['display'] = 'popup';
                 redirect($this->fb->getLoginUrl($ppp));

@@ -7,8 +7,8 @@ class Photo extends CI_Controller
     public function __construct()
     {
         parent::__construct();
-        $this->load->model('photo_model', 'photoManager');
-        $this->load->model('statut_model', 'statutManager');
+        $this->load->model('photo_model');
+        $this->load->model('statut_model');
         
         $this->twig->addFunction('getsessionhelper');
         
@@ -28,10 +28,10 @@ class Photo extends CI_Controller
         
         if(empty($categorie))
         {
-            $data['res'] = $this->photoManager->getAllPhotos(getsessionhelper()['id']);
+            $data['res'] = $this->photo_model->getAllPhotos(getsessionhelper()['id']);
             foreach($data['res'] as $value)
             {
-                $value->statut = $this->statutManager->getStatut($value->statut)->statut;
+                $value->statut = $this->statut_model->getStatut($value->statut)->statut;
                 
                 if($value->partage == 0)
                     $value->etat = 'Image non partagé';
@@ -43,10 +43,10 @@ class Photo extends CI_Controller
         }
         else
         {
-            $data['res'] = $this->photoManager->getPhotosByCategorie(getsessionhelper()['id'], $categorie);
+            $data['res'] = $this->photo_model->getPhotosByCategorie(getsessionhelper()['id'], $categorie);
             foreach($data['res'] as $value)
             {
-                $value->statut = $this->statutManager->getStatut($value->statut)->statut;
+                $value->statut = $this->statut_model->getStatut($value->statut)->statut;
                 
                 if($value->partage == 0)
                     $value->etat = 'Image non partagé';
@@ -69,8 +69,8 @@ class Photo extends CI_Controller
             exit('Erreur ID Photo');
         
         $data = array();
-        $data['s'] = $this->statutManager->getStatut($this->photoManager->getPhoto($id)->statut)->statut;
-        $data['l'] = $this->photoManager->getPhoto($id)->localisation;
+        $data['s'] = $this->statut_model->getStatut($this->photo_model->getPhoto($id)->statut)->statut;
+        $data['l'] = $this->photo_model->getPhoto($id)->localisation;
         
         //$this->form_validation->set_error_delimiters('<p class="form_erreur">', '</p>');
         
@@ -79,7 +79,7 @@ class Photo extends CI_Controller
         
         if($this->form_validation->run())
         {
-            $this->photoManager->updatephoto($id);
+            $this->photo_model->updatephoto($id);
             redirect('/photo');
         }
         else
@@ -93,49 +93,68 @@ class Photo extends CI_Controller
         if(empty($id))
             exit('Erreur ID image');
         
-        $this->photoManager->deletePhoto($id);
+        $this->photo_model->deletePhoto($id);
         redirect('/photo');
     }
     
-    public function publierfb($photo, $msg)
+    public function publierfb($id)
     {
-        $uid = $this->fb->getUser();
-        //$img_url = base_url() . 'uploads/'.$photo;
-        $img_url = 'C:/wamp/www/SmartShare/uploads/photo3.png';
+        //Initialisation
+        $path = 'C:/wamp/www/SmartShare/uploads/';
+        $res   = $this->photo_model->getPhoto($id);
+        $photo = $path . $res->photo;
+        $msg   = $this->statut_model->getStatut($res->statut)->statut;
+        $lieu  = $this->statut_model->getStatut($res->statut)->localisation;
         
+        /*echo $photo;
+        echo '<br />';
+        echo $msg;
+        echo '<br />';
+        echo $lieu;
+        return;*/
+        
+        
+        $uid = $this->fb->getUser();
         
         if (empty($uid)) //User non connecté sur facebook
         {
-            $ppp = array();
-            $ppp['redirect_uri'] = 'http://localhost:8094/photo/publierfb/' . $photo . '/' . $msg;
-            $ppp['display'] = 'popup';
-            redirect($this->fb->getLoginUrl($ppp));
+            $param = array();
+            $param['redirect_uri'] = 'http://localhost:8094/photo/publierfb/' . $id;
+            $param['display'] = 'popup';
+            redirect($this->fb->getLoginUrl($param));
         }
         else //User connecté sur facebook
         {
             try
             {
-                $ret_obj = $this->fb->api('/me/photos', 'POST', array('source' => '@'.$img_url, 'message' => $msg));
-                
-                /*$ret_obj = $this->fb->api('/me/feed', 'POST',
-                                    array(
-                                      'link' => 'www.lol.com',
-                                      'message' => 'Test'
-                                 ));*/
-                
-                echo '<pre>';
-                print_r($ret_obj);
-                echo '</pre>';
+                $this->fb->api('/me/photos', 'POST', array('source' => '@'.$photo, 'message' => $msg . ' @' . $lieu));
+                //redirect('/photo');
+                echo 'Photo partagée';
             }
             catch(FacebookApiException $e)
             {
-                echo 'Exception: ' . $e->getMessage();
+                echo 'Exception:';
+                echo '<br />';
+                echo $e->getType();
+                echo '<br />';
+                echo $e->getMessage();
             }   
         }
     }
     
 }
 
+
+/*$img = $this->fb->api('/me/feed', 'POST', array('link' => 'www.lol.com',
+                                                            'message' => 'Test'));
+
+$ret_obj = $this->fb->api('/me/photos', 'POST', array('source' => '@' . $photo,
+                                                      'message' => $msg,));
+
+echo '<pre>';
+print_r($img);
+echo '</pre>';
+*/
 ?>
 
 
