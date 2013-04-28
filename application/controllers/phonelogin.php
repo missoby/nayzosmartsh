@@ -82,25 +82,22 @@ class Phonelogin extends CI_Controller
         function upload()
 	{
             $config['upload_path'] = './uploads/';
-            $config['allowed_types'] = 'gif|jpg|png|jpeg';
-            $config['max_size']	= '300';
+            $config['allowed_types'] = '*'; //'jpg|png';
+            $config['max_size']	= '1000';
             $config['max_width']  = '1024';
-            $config['max_height']  = '768';
+            $config['max_height']  = '1024';
             $config['encrypt_name']  = TRUE;
+           // $config['file_name'] = $config['file_name'] . '.jpg';
 
             $this->load->library('upload', $config);
 
-            if ( ! $this->upload->do_upload())
+            if ( ! $this->upload->do_upload('file'))
             {
-               	//$error = array('error' => $this->upload->display_errors());
                    echo $this->upload->display_errors();
             }
             else
             {
-            	//$data = array('upload_data' => $this->upload->data());
-                $this->phonelogin_model->saveuploadimage($this->upload->data());
-                echo "seccess";
-                //$this->twig->render('successupload', $data);
+                $this->phonelogin_model->saveuploadimage($this->upload->data());                    
             }
 	}
 }

@@ -36,12 +36,12 @@ class Phonelogin_model extends CI_Model {
         $statut = null;
         if($this->input->post('statut'))
         {
-            setStatut();
+            $this->setStatut();
             $statut = $this->db->insert_id();
         }
         
         $data = array(
-            'photo'     => $photo,
+            'photo'     => $photo['file_name'],
             'statut'     => $statut,
             'user'       => $this->input->post('id'),
             'date_envoi' => date('Y-m-d H:i:s'),

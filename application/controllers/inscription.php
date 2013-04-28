@@ -43,8 +43,8 @@ class Inscription extends CI_Controller
                     'protocol' => 'smtp',
                     'smtp_host' => 'ssl://smtp.googlemail.com',
                     'smtp_port' => 465,
-                    'smtp_user' => 'bourcedefret@gmail.com',
-                    'smtp_pass' => 'markmark88',
+                    'smtp_user' => 'resa.travelstore@gmail.com',
+                    'smtp_pass' => 'travelstore2012',
                     'mailtype'  => 'html'
                     );
                     
