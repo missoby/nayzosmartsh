@@ -13,13 +13,13 @@ class Photo extends CI_Controller
         $this->twig->addFunction('getsessionhelper');
         
         //Facebook Connect
-            require_once 'assets/facebook_sdk_src/facebook.php';
-            $param = array();
-            $param['appId'] = '444753728948897';
-            $param['secret'] = '5ab7c77a75fd646619cc98bde08e37e3';
-            $param['fileUpload'] = true; // pour envoyer des photos
-            $param['cookie'] = false;
-            $this->fb = new Facebook($param);
+        require_once 'assets/facebook_sdk_src/facebook.php';
+        $param = array();
+        $param['appId'] = '444753728948897';
+        $param['secret'] = '5ab7c77a75fd646619cc98bde08e37e3';
+        $param['fileUpload'] = true; // pour envoyer des photos
+        $param['cookie'] = false;
+        $this->fb = new Facebook($param);
     }
         
     public function index($categorie = "")
@@ -106,14 +106,6 @@ class Photo extends CI_Controller
         $msg   = $this->statut_model->getStatut($res->statut)->statut;
         $lieu  = $this->statut_model->getStatut($res->statut)->localisation;
         
-        /*echo $photo;
-        echo '<br />';
-        echo $msg;
-        echo '<br />';
-        echo $lieu;
-        return;*/
-        
-        
         $uid = $this->fb->getUser();
         
         if (empty($uid)) //User non connecté sur facebook
@@ -129,7 +121,10 @@ class Photo extends CI_Controller
             {
                 $this->fb->api('/me/photos', 'POST', array('source' => '@'.$photo, 'message' => $msg . ' @' . $lieu));
                 //redirect('/photo');
-                echo 'Photo partagée';
+                if(!$this->photo_model->setShared($id))
+                    echo 'Erreur modification attribut partagé de la photo<br />';
+                
+                echo 'Photo partagee';
             }
             catch(FacebookApiException $e)
             {

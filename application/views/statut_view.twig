@@ -27,7 +27,7 @@
                     <a href="/statut/modifier/{{ ph.id }}" class="btn" title="Edit Status"> <i class="icon-edit"></i></a>
                     <a href="/statut/supprimer/{{ ph.id }}" class="btn deleteadmin" title="Delete Status"> <i class="icon-trash"></i></a>
                     {%if ph.partage == 0%}
-                    <a href="" class="btn" title="Share Status"> <i class="icon-share-alt"></i></a>
+                    <a href="/statut/publierfb/{{ ph.id }}" class="btn" title="Share Status"> <i class="icon-share-alt"></i></a>
                     {% endif %}
                 </td>
             </tr>

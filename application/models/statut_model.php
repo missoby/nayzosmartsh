@@ -33,6 +33,15 @@ class Statut_model extends CI_Model
 
         $this->db->insert($this->table, $data);
     }
+    
+    public function setShared($id)
+    {
+        if(empty($id))
+            return false;
+        
+        $this->db->update($this->table, array('partage' => 1), array('id' => $id));
+        return true;
+    }
 
     public function updateStatut($id)
     {

@@ -27,6 +27,15 @@ class Photo_model extends CI_Model
         return $query->result();
     }
     
+    public function setShared($id)
+    {
+        if(empty($id))
+            return false;
+        
+        $this->db->update($this->table, array('partage' => 1), array('id' => $id));
+        return true;
+    }
+    
     public function updatePhoto($id)
     {
         if(empty($id))
