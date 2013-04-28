@@ -32,9 +32,9 @@ class Frontend extends CI_Controller
 	$config['max_height']  = '768';
         $config['encrypt_name']  = TRUE;
 
-	$this->load->library('upload', $config);
-
-	if ( ! $this->upload->do_upload())
+        $this->load->library('upload', $config);
+        
+	if (!$this->upload->do_upload()) //Erreur upload
 	{
 		$error = array('error' => $this->upload->display_errors());
 		$this->twig->render('uploadimg', $error);

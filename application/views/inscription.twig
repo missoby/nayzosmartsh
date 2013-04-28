@@ -1,35 +1,32 @@
-<!DOCTYPE>
-<html>
-    <head>
-        <meta charset="utf-8" />
-        <title>Inscription</title>
-    </head>
-    <body>
-        <header>
-            Home page : <a href="/">Home</a> |
-            <a href="/inscription/login">Login</a> |
-            <a href="/inscription/inscriptionfb">Inscription avec votre compte Facebook</a>
-        </header>
+{% extends "/layout.twig" %}
 
-        {{ validation_errors() }}
+{% block title %} {{parent()}} - Login{% endblock title %}
+{#---Header---#}
+{%block header%}
+    <header class="bar-top"></header>
+{%endblock header%}
+    
+{%block content%}
+        <div class="span4 offset4 well2">
+            <form method="POST" action="" accept-charset="UTF-8">
+                <fieldset>
+                    <legend>Please Register</legend>
+                    <div class="error-form">
+                        {{ validation_errors() }}
+                    </div>
+                    <input type="text" class="span4" name="nom" placeholder="full name" required="required" value="{{set_value('nom')}}"/>
+                    <input type="text" id="email" class="span4" name="email" placeholder="your Email" value="{{set_value('email')}}" required="required"/>
+                    <input type="password" class="span4" name="password" placeholder="Your Password" required="required"/>
+                    <input type="password" class="span4" name="password2" placeholder="Confirm your Password" required="required"/>
+                    <input type="submit" name="submit" class="btn btn-block btn-inverse" value="Register">
+                    <label style="text-align:center;margin-top:5px">or</label>
+                    <button class="btn btn-primary btn-block" onClick="location.href='/inscription/inscriptionfb'"><img src="{{base_url()}}assets/img/fb.png"> Register with Facebook</button>
+                </fieldset>
+            </form>    
+        </div>
+{%endblock content%}
+ 
 
-        <!-- <form action="inscription/saveform" method="POST" > --> 
-        <form action="" method="POST" >
-            <label>Nom Complet:</label>
-            <input type="text" name="nom" required="required" value="{{set_value('nom')}}" />
-            <br/>
-            <label>Email:</label>
-            <input type="email" name="email" required="required" value="{{set_value('email')}}" />
-            <br/>
-            <label>Mot de Passe:</label>
-            <input type="password" name="password" required="required"/>
-            <br/>
-            <label>Confirmer mot de Passe:</label>
-            <input type="password" name="password2" required="required"/>
-            <br/>
-            <input type="submit" value="Enregistrer"/>
-        </form>
-    </body>
-</html>
+
 
 

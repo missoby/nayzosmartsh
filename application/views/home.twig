@@ -1,24 +1,61 @@
-<!DOCTYPE>
-<html>
-    <head>
-        <meta charset="utf-8" />
-        <title>Smart Share</title>
-    </head>
-    
-    <body>
-        <header>
-            Home page : <a href="/">Home</a> | 
-            {% if getsessionhelper() %} {{ getsessionhelper()['nom'] }} | 
-            <a href="/profil" id=''> Profil </a> |
-            <a href="/photo" id=''> Photo </a> |
-            <a href="/statut" id=''> Statut </a> |
-            <a href="/inscription/logout" id='logoutsmart'> logout </a>
-            {% else %} 
-            <a id="inscrismart" href="/inscription"> Inscription </a> | 
-            <a id="loginsmart" href="/inscription/login"> Login </a> 
-            {% endif %}
+{% extends "/layout.twig" %}
+
+{% block title %} {{parent()}} - Home{% endblock title %}
+{#---Header---#}
+{%block header%}
+    <header class="page-header" style="height: 643px;">
+            <div class="container" style="height: 554px;">
+                <div class="row">
+                    <div class="span12">
+                   
+                        <p class="span8 offset4" style="margin-top: 34%;">
+                            <a href="" class="btn span2" style="border-radius: 44px;"><img src="{{base_url()}}assets/img/android.png"> Download app</a>
+                            <a href="" class="btn span2" style="border-radius: 44px;"><img src="{{base_url()}}assets/img/icon-iphone.png"> Download app</a>
+                        </p>
+                    </div>
+                    </div>
+                      
+                </div>
+            </div>
+                <div  style="background-color: rgba(0, 0, 0, 0.48);margin-top: -18px;height: 107px;">
+            <div class="container">
+                <div class="row">
+                      <div class="span12">
+                          <div class="row">
+                              <div class="span3">
+                                  <div class="row">
+                                      <img src="{{base_url()}}assets/img/pictur.png" class="span1" style="width: 70px; height: 70px;margin-left: 70px;">
+                                      <div class="span2" style="color: white"><p class="text-center">Share Photos with anyone</p></div>
+                                  </div>
+                              </div>
+                              <div class="span3">
+                                  <div class="row">
+                                      <img src="{{base_url()}}assets/img/edit.png" class="span1" style="width: 70px; height: 70px;margin-left: 70px;">
+                                      <div class="span2" style="color: white"><p class="text-center">Write status on photos</p></div>
+                                  </div>
+                              </div>
+                              <div class="span3">
+                                  <div class="row">
+                                      <img src="{{base_url()}}assets/img/chat.png" class="span1" style="width: 70px; height: 70px;margin-left: 70px;">
+                                      <div class="span2" style="color: white"><p class="text-center">Tchat with friends</p></div>
+                                  </div>
+                              </div>
+
+
+                              <div class="span3">
+                                  <div class="row">
+                                      <img src="{{base_url()}}assets/img/layout.png" class="span1" style="width: 70px; height: 70px;margin-left: 70px;">
+                                      <div class="span3" style="color: white"><p>Easy use of the application</p></div>
+                                  </div>
+                              </div>
+                          </div>
+                      </div>
+                </div>
+            </div>
+         </div>
         </header>
-    </body>
-</html>
+{%endblock header%}
+{%block container%}
+{%endblock container%}
 
 
