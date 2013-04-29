@@ -35,8 +35,6 @@ class Statut extends CI_Controller
     
     public function nouveau()
     {
-        //$this->form_validation->set_error_delimiters('<p class="form_erreur">', '</p>');
-        
         $this->form_validation->set_rules('localisation', '\'Localisation\'', 'trim|max_length[255]|xss_clean');
         $this->form_validation->set_rules('statut', '\'Statut\'', 'trim|required|xss_clean');
         
@@ -124,7 +122,5 @@ class Statut extends CI_Controller
     }
     
 }
-
-?>
 
 

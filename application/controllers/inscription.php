@@ -97,11 +97,6 @@ class Inscription extends CI_Controller
                 $response = $this->parse_signed_request($_REQUEST['signed_request'], $this->fb->getAppSecret());
                 $this->inscription_model->insert_inscription($response);
                 $this->twig->render('formsuccess', array('mail' => false));
-                
-                /*echo '<pre>';
-                print_r($response);
-                echo '</pre>';
-                echo $response['user_id'];*/
             }
         }
         
@@ -238,6 +233,13 @@ class Inscription extends CI_Controller
             return base64_decode(strtr($input, '-_', '+/'));
         }
         /***************************************************************************************************/
+        
+        
+        /*echo '<pre>';
+        print_r($response);
+        echo '</pre>';
+        echo $response['user_id'];*/
+        
         
         //Fonction ZEYDA!!
         /*public function registerfb()

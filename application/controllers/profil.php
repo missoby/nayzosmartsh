@@ -42,8 +42,6 @@ class Profil extends CI_Controller
     
     public function modifier_password()
     {
-        //$this->form_validation->set_error_delimiters('<p class="form_erreur">', '</p>');
-        
         $this->form_validation->set_rules('old', '\'Ancien mot de passe\'', 'trim|required|min_length[4]|max_length[255]|alpha_dash|encode_php_tags|xss_clean|callback_checkOldPass');
         $this->form_validation->set_rules('new', '\'Nouveau mot de passe\'', 'trim|required|min_length[4]|max_length[255]|alpha_dash|encode_php_tags|xss_clean');
         $this->form_validation->set_rules('renew', '\'Nouveau mot de passe\'', 'trim|required|min_length[4]|max_length[255]|alpha_dash|encode_php_tags|xss_clean|matches[new]');
